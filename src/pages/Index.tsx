@@ -32,7 +32,7 @@ const Index = () => {
 
   const calculations = useMemo(() => {
     const totalKwh = appliances.reduce((sum, app) => sum + (app.wattage * app.hours) / 1000, 0);
-    const costPerKwh = 0.12;
+    const costPerKwh = 10;
     const dailyCost = totalKwh * costPerKwh;
     const monthlyCost = dailyCost * 30;
     const solarSavings = isSolarMode ? monthlyCost * 0.7 : 0;

@@ -28,14 +28,14 @@ export const SummaryCards = ({
     },
     {
       title: "Daily Cost",
-      value: `$${dailyCost.toFixed(2)}`,
-      subtitle: "at $0.12/kWh",
+      value: `₹${dailyCost.toFixed(2)}`,
+      subtitle: "at ₹10/kWh",
       icon: DollarSign,
       gradient: "bg-gradient-sky",
     },
     {
       title: "Monthly Cost",
-      value: `$${monthlyCost.toFixed(2)}`,
+      value: `₹${monthlyCost.toFixed(2)}`,
       subtitle: "estimated",
       icon: DollarSign,
       gradient: "bg-gradient-solar",
@@ -46,7 +46,7 @@ export const SummaryCards = ({
     cards.push(
       {
         title: "Solar Savings",
-        value: `$${solarSavings.toFixed(2)}`,
+        value: `₹${solarSavings.toFixed(2)}`,
         subtitle: "per month",
         icon: TrendingDown,
         gradient: "bg-gradient-eco",
