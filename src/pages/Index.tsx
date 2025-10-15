@@ -35,10 +35,13 @@ const Index = () => {
     const costPerKwh = 10;
     const dailyCost = totalKwh * costPerKwh;
     const monthlyCost = dailyCost * 30;
+    const monthlyKwh = totalKwh * 30;
+    const carbonEmissionFactor = 0.82; // kg CO₂ per kWh (average for India)
+    const carbonEmitted = monthlyKwh * carbonEmissionFactor;
     const solarSavings = isSolarMode ? monthlyCost * 0.7 : 0;
-    const carbonSaved = isSolarMode ? totalKwh * 30 * 0.7 : 0;
+    const carbonSaved = isSolarMode ? carbonEmitted * 0.7 : 0;
 
-    return { totalKwh, dailyCost, monthlyCost, solarSavings, carbonSaved };
+    return { totalKwh, dailyCost, monthlyCost, solarSavings, carbonEmitted, carbonSaved };
   }, [appliances, isSolarMode]);
 
   const chartData = useMemo(() => {
@@ -98,6 +101,7 @@ const Index = () => {
             dailyCost={calculations.dailyCost}
             monthlyCost={calculations.monthlyCost}
             solarSavings={calculations.solarSavings}
+            carbonEmitted={calculations.carbonEmitted}
             carbonSaved={calculations.carbonSaved}
             isSolarMode={isSolarMode}
           />

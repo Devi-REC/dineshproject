@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card";
-import { Zap, DollarSign, TrendingDown, Leaf } from "lucide-react";
+import { Zap, DollarSign, TrendingDown, Leaf, CloudOff } from "lucide-react";
 
 interface SummaryCardsProps {
   totalKwh: number;
   dailyCost: number;
   monthlyCost: number;
   solarSavings: number;
+  carbonEmitted: number;
   carbonSaved: number;
   isSolarMode: boolean;
 }
@@ -15,6 +16,7 @@ export const SummaryCards = ({
   dailyCost,
   monthlyCost,
   solarSavings,
+  carbonEmitted,
   carbonSaved,
   isSolarMode,
 }: SummaryCardsProps) => {
@@ -54,11 +56,19 @@ export const SummaryCards = ({
       {
         title: "Carbon Saved",
         value: `${carbonSaved.toFixed(1)} kg`,
-        subtitle: "CO₂ per month",
+        subtitle: "CO₂ per month (70% reduction)",
         icon: Leaf,
         gradient: "bg-gradient-solar",
       }
     );
+  } else {
+    cards.push({
+      title: "Carbon Emitted",
+      value: `${carbonEmitted.toFixed(1)} kg`,
+      subtitle: "CO₂ per month",
+      icon: CloudOff,
+      gradient: "bg-gradient-to-br from-orange-500 to-red-500",
+    });
   }
 
   return (
