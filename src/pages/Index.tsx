@@ -1,13 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sun, LogOut } from "lucide-react";
+import { Sun } from "lucide-react";
 import { ApplianceForm } from "@/components/ApplianceForm";
 import { ApplianceList } from "@/components/ApplianceList";
 import { SummaryCards } from "@/components/SummaryCards";
 import { EnergyChart } from "@/components/EnergyChart";
 import { SolarToggle } from "@/components/SolarToggle";
 import { EnergyFooter } from "@/components/EnergyFooter";
-import { Button } from "@/components/ui/button";
+import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
@@ -23,6 +23,7 @@ const Index = () => {
   const [appliances, setAppliances] = useState<Appliance[]>([]);
   const [isSolarMode, setIsSolarMode] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<{ name: string; email: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -33,6 +34,7 @@ const Index = () => {
       if (session?.user) {
         setUser(session.user);
         loadAppliances(session.user.id);
+        loadProfile(session.user.id);
       } else {
         navigate("/auth");
       }
@@ -43,6 +45,7 @@ const Index = () => {
       if (session?.user) {
         setUser(session.user);
         loadAppliances(session.user.id);
+        loadProfile(session.user.id);
       } else {
         navigate("/auth");
       }
@@ -50,6 +53,20 @@ const Index = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const loadProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("name, email")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      console.error("Error loading profile:", error);
+    } else if (data) {
+      setProfile(data);
+    }
+  };
 
   const loadAppliances = async (userId: string) => {
     const { data, error } = await supabase
@@ -185,15 +202,13 @@ const Index = () => {
                 <p className="text-white/90 text-sm">Track, analyze & optimize your power consumption</p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
+            {profile && (
+              <ProfileDropdown
+                userName={profile.name || "User"}
+                userEmail={profile.email || ""}
+                onLogout={handleLogout}
+              />
+            )}
           </div>
         </div>
       </header>
