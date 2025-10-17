@@ -9,6 +9,7 @@ interface SummaryCardsProps {
   carbonEmitted: number;
   carbonSaved: number;
   isSolarMode: boolean;
+  avgRate: number;
 }
 
 export const SummaryCards = ({
@@ -19,6 +20,7 @@ export const SummaryCards = ({
   carbonEmitted,
   carbonSaved,
   isSolarMode,
+  avgRate,
 }: SummaryCardsProps) => {
   const cards = [
     {
@@ -31,14 +33,14 @@ export const SummaryCards = ({
     {
       title: "Daily Cost",
       value: `₹${dailyCost.toFixed(2)}`,
-      subtitle: "at ₹10/kWh",
+      subtitle: "TN Slab Rates",
       icon: DollarSign,
       gradient: "bg-gradient-sky",
     },
     {
       title: "Monthly Cost",
       value: `₹${monthlyCost.toFixed(2)}`,
-      subtitle: "estimated",
+      subtitle: `avg ₹${avgRate.toFixed(2)}/kWh`,
       icon: DollarSign,
       gradient: "bg-gradient-solar",
     },

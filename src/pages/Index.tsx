@@ -11,6 +11,7 @@ import { ProfileDropdown } from "@/components/ProfileDropdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { User } from "@supabase/supabase-js";
+import { calculateSlabCost, getAverageRate } from "@/lib/energyUtils";
 
 interface Appliance {
   id: string;
@@ -143,16 +144,16 @@ const Index = () => {
 
   const calculations = useMemo(() => {
     const totalKwh = appliances.reduce((sum, app) => sum + (app.wattage * app.hours) / 1000, 0);
-    const costPerKwh = 10;
-    const dailyCost = totalKwh * costPerKwh;
-    const monthlyCost = dailyCost * 30;
+    const dailyCost = calculateSlabCost(totalKwh);
     const monthlyKwh = totalKwh * 30;
+    const monthlyCost = calculateSlabCost(monthlyKwh);
+    const avgRate = getAverageRate(monthlyKwh);
     const carbonEmissionFactor = 0.82;
     const carbonEmitted = monthlyKwh * carbonEmissionFactor;
     const solarSavings = isSolarMode ? monthlyCost * 0.7 : 0;
     const carbonSaved = isSolarMode ? carbonEmitted * 0.7 : 0;
 
-    return { totalKwh, dailyCost, monthlyCost, solarSavings, carbonEmitted, carbonSaved };
+    return { totalKwh, dailyCost, monthlyCost, solarSavings, carbonEmitted, carbonSaved, avgRate };
   }, [appliances, isSolarMode]);
 
   const chartData = useMemo(() => {
@@ -230,6 +231,7 @@ const Index = () => {
             carbonEmitted={calculations.carbonEmitted}
             carbonSaved={calculations.carbonSaved}
             isSolarMode={isSolarMode}
+            avgRate={calculations.avgRate}
           />
         </div>
 
